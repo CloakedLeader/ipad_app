@@ -1,139 +1,140 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const ComicLibraryApp());
+  runApp(const MyApp());
 }
 
-class ComicLibraryApp extends StatelessWidget {
-  const ComicLibraryApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Comic Library",
-      theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: Colors.black,
-        cardColor: Colors.grey[900]
-      ),
-      home: const HomePage(),
-      debugShowCheckedModeBanner: false,
+      home: MyHomePage(),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Comic Library"),
-        centerTitle:  true,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: const[
-            SectionTitle("Continue Reading"),
-            ComicScroller(),
-            SectionTitle("Recommended"),
-            ComicScroller(),
-            SectionTitle("Available to Download"),
-            ComicScroller(),
-            SizedBox(height: 20),
+  return DefaultTabController(
+    length: 5,
+    child: Scaffold(
+      appBar:  AppBar(
+        title: const Text('My Comic Library'),
+        bottom: TabBar(
+          isScrollable: true,
+          tabs: [
+            Tab(text: 'Home'),
+            Tab(text: 'Downloaded'),
+            Tab(text: 'Library'),
+            Tab(text: 'Upcoming'),
+            Tab(text: 'Settings'),
           ],
-        ),
+          ),
+      ),
+      body: TabBarView(
+        children: [
+          HomeTab(),
+          DownloadedTab(),
+          ServerTab(),
+          UpcomingTab(),
+          SettingsTab(),
+        ],
+      ),
+    ), 
+  );
+}
+}
+
+class SettingsTab extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text('Settings'),
+    );
+  }
+}
+
+class UpcomingTab extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text('Upcoming'),
+    );
+  }
+}
+
+class ServerTab extends StatelessWidget {
+@override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text('Server'),
+    );
+  }
+}
+
+class DownloadedTab extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text('Downloaded'),
+    );
+  }
+}
+
+class HomeTab extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ScrollArea(title: 'Continue Reading..'),
+          ScrollArea(title: 'Recommended')
+        ],
       ),
     );
   }
 }
 
-class SectionTitle extends StatelessWidget{
-  final String text;
-  const SectionTitle(this.text, {super.key});
+
+
+class ScrollArea extends StatelessWidget {
+  final String title;
+
+  const ScrollArea({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: Text(
-        text,
-        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.grey.shade200,
       ),
-    );
-  }
-}
-
-class ComicScroller extends StatelessWidget {
-  const ComicScroller({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 220,
-      child: ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        scrollDirection: Axis.horizontal,
-        itemCount: 5,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
-        itemBuilder: (context, index) => ComicCard(index: index),
-      ),
-    );
-  }
-}
-
-class ComicCard extends StatelessWidget {
-  final int index;
-  const ComicCard({required this.index, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        // TODO: Navigate to comic reader or download screen
-      },
-      child: Container(
-        width: 140,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          color: Theme.of(context).cardColor,
-          boxShadow: const [BoxShadow(color: Colors.black45, blurRadius: 6)],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Placeholder comic cover
-            Container(
-              height: 160,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                image: DecorationImage(
-                  image: NetworkImage('https://via.placeholder.com/140x160?text=Comic+${index + 1}'),
-                  fit: BoxFit.cover,
-                ),
-              ),
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.all(8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: Theme.of(context).textTheme.titleMedium),
+          SizedBox(height: 8),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                Container(width: 200, height: 120, color: Colors.red),
+                SizedBox(width: 12),
+                Container(width: 200, height: 120, color: Colors.green),
+                SizedBox(width: 12),
+                Container(width: 200, height: 120, color: Colors.blue),
+              ],
             ),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                'Comic Title #${index + 1}',
-                style: const TextStyle(fontSize: 14),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                'Vol. 1',
-                style: TextStyle(fontSize: 12, color: Colors.grey[400]),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
